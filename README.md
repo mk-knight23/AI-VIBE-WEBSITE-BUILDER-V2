@@ -1,6 +1,6 @@
 # Xdesign.ai | AI Mobile UI Design Agent
 
-Modern full-stack AI platform to design and prototype mobile apps in seconds.
+Modern full-stack AI platform to design and prototype  mobile apps in seconds.
 
 ## Features
 - ✨ **AI Direct Design**: Prompt-to-UI generation using Gemini 2.0.
