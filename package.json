@@ -1,6 +1,7 @@
 {
   "name": "ai-app",
   "version": "0.1.0",
+  "description": "Advanced AI-powered mobile app design platform featuring a draggable flow-based canvas and realistic device mockups.",
   "private": true,
   "scripts": {
     "dev": "next dev",
