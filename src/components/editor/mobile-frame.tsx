@@ -96,12 +96,29 @@ export function MobileFrame({ data, selected, onRegenerate, onDelete }: MobileFr
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-10" />
 
                 <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative">
-                    {/* Render Generated UI */}
-                    <div
-                        className="w-full h-full overflow-y-auto"
-                        dangerouslySetInnerHTML={{ __html: data.html }}
+                    {/* SECURITY: Use sandboxed iframe to prevent XSS attacks from AI-generated HTML */}
+                    <iframe
+                        className="w-full h-full border-0"
+                        sandbox="allow-same-origin"
+                        srcDoc={`
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <style>
+                                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-y: auto; height: 100vh; }
+                                    ${data.css || ''}
+                                </style>
+                            </head>
+                            <body>
+                                ${data.html || ''}
+                            </body>
+                            </html>
+                        `}
+                        title={data.name || "Mobile Preview"}
                     />
-                    {data.css && <style>{data.css}</style>}
                 </div>
             </div>
 

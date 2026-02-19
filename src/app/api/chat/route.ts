@@ -1,7 +1,8 @@
 import { generateText } from "ai";
 import { z } from "zod";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { minimax } from "vercel-minimax-ai-provider";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
@@ -15,7 +16,10 @@ interface ChatMessage {
 /**
  * Generate a chat response using Minimax AI
  */
-async function generateResponse(messages: ChatMessage[], projectId?: string): Promise<string> {
+async function generateResponse(
+  messages: ChatMessage[],
+  projectId?: string,
+): Promise<string> {
   // Build conversation context
   const conversationHistory = messages
     .map((m) => `${m.role}: ${m.content}`)
@@ -53,24 +57,35 @@ assistant:`;
 }
 
 const chatBodySchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(["user", "assistant", "system"]),
-      content: z.string(),
-    })
-  ).min(1, "Messages are required"),
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant", "system"]),
+        content: z.string(),
+      }),
+    )
+    .min(1, "Messages are required"),
   projectId: z.string().optional(),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // Apply rate limiting for AI chat endpoint (strict: 10 req/min)
+  const rateLimitResponse = rateLimit(RATE_LIMITS.strict)(req);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const body = await req.json();
     const validation = chatBodySchema.safeParse(body);
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Invalid request body", details: validation.error.flatten().fieldErrors },
-        { status: 400 }
+        {
+          error: "Invalid request body",
+          details: validation.error.flatten().fieldErrors,
+        },
+        { status: 400 },
       );
     }
 
@@ -83,8 +98,10 @@ export async function POST(req: Request) {
     console.error("[Chat] Error:", error);
 
     return NextResponse.json(
-      { text: "I'm having trouble connecting right now. Please try again in a moment." },
-      { status: 200 } // Return 200 so UI shows the fallback message
+      {
+        text: "I'm having trouble connecting right now. Please try again in a moment.",
+      },
+      { status: 200 }, // Return 200 so UI shows the fallback message
     );
   }
 }

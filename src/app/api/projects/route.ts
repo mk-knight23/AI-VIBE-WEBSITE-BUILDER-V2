@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateText } from "ai";
 import { minimax } from "vercel-minimax-ai-provider";
 import { z } from "zod";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 const minimaxModel = minimax("abab6.5s-chat");
 
@@ -31,6 +32,12 @@ const createProjectSchema = z.object({
 
 // POST /api/projects - Create a new project
 export async function POST(req: NextRequest) {
+  // Apply rate limiting for project creation (moderate: 30 req/min)
+  const rateLimitResponse = rateLimit(RATE_LIMITS.moderate)(req);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -42,8 +49,11 @@ export async function POST(req: NextRequest) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Invalid request body", details: validation.error.flatten().fieldErrors },
-        { status: 400 }
+        {
+          error: "Invalid request body",
+          details: validation.error.flatten().fieldErrors,
+        },
+        { status: 400 },
       );
     }
 
@@ -70,13 +80,19 @@ export async function POST(req: NextRequest) {
     console.error("[Projects] Error creating project:", error);
     return NextResponse.json(
       { error: "Failed to create project" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 // GET /api/projects - List all projects for the current user
 export async function GET(req: NextRequest) {
+  // Apply rate limiting for listing projects (lenient: 100 req/min)
+  const rateLimitResponse = rateLimit(RATE_LIMITS.lenient)(req);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -120,7 +136,7 @@ export async function GET(req: NextRequest) {
     console.error("[Projects] Error fetching projects:", error);
     return NextResponse.json(
       { error: "Failed to fetch projects" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

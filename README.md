@@ -1,22 +1,47 @@
-# VibeDesign.ai | AI Mobile UI Design Agent
+# 📱 VibeDesign.ai | AI-VIBE-WEBSITE-BUILDER-V2
 
-<div align="center">
+<p align="center">
+  <img src="https://img.shields.io/badge/AI--VIBE-WEBSITE--BUILDER--V2-black?style=for-the-badge&logo=next.js&logoColor=white" alt="AI Vibe Project">
+  <br>
+  <b>AI-powered platform to design and prototype mobile apps in seconds.</b>
+</p>
 
-![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=for-the-badge&logo=tailwindcss)
-![Prisma](https://img.shields.io/badge/Prisma-7.0-2d3748?style=for-the-badge&logo=prisma)
-![Clerk](https://img.shields.io/badge/Clerk-Auth-6c47ff?style=for-the-badge&logo=clerk)
-
-**An AI-powered platform to design and prototype mobile apps in seconds.**
-
-[Features](#features) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Deployment](#deployment)
-
-</div>
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=flat-square&logo=tailwindcss" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Prisma-7.0-2d3748?style=flat-square&logo=prisma" alt="Prisma">
+  <img src="https://img.shields.io/badge/Clerk-Auth-6c47ff?style=flat-square&logo=clerk" alt="Clerk">
+</p>
 
 ---
 
-## Features
+## 🗺️ Quick Navigation
+
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
+- [🚀 Getting Started](#-getting-started)
+- [📂 Project Structure](#-project-structure)
+- [📚 API Documentation](#-api-documentation)
+- [🌐 Deployment](#-deployment)
+- [🏗️ Architecture](#%EF%B8%8F-architecture)
+
+---
+
+## 🛠️ Engineered With
+
+<p align="left">
+  <a href="https://nextjs.org"><img src="https://skillicons.dev/icons?i=nextjs" alt="Next.js"></a>
+  <a href="https://react.dev"><img src="https://skillicons.dev/icons?i=react" alt="React"></a>
+  <a href="https://prisma.io"><img src="https://skillicons.dev/icons?i=prisma" alt="Prisma"></a>
+  <a href="https://tailwindcss.com"><img src="https://skillicons.dev/icons?i=tailwind" alt="Tailwind CSS"></a>
+  <a href="https://clerk.com"><img src="https://img.shields.io/badge/Auth-Clerk-6C47FF" alt="Clerk"></a>
+  <a href="https://xyflow.com"><img src="https://img.shields.io/badge/Flow-XYFlow-FF0071" alt="XYFlow"></a>
+</p>
+
+---
+
+## ✨ Features
 
 - **AI Direct Design**: Prompt-to-UI generation using Minimax AI
 - **Draggable Canvas**: Infinite workspace powered by XYFlow (React Flow)
@@ -28,7 +53,9 @@
 - **Error Handling**: Comprehensive error boundaries with fallback content
 - **Chat Assistant**: AI-powered design assistant for guidance
 
-## Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
@@ -43,7 +70,9 @@
 | AI | Vercel AI SDK (Minimax) |
 | Forms | Zod validation |
 
-## Getting Started
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -107,60 +136,45 @@
 | `CLERK_SECRET_KEY` | Yes | Clerk secret key |
 | `MINIMAX_API_KEY` | Yes | Minimax API key for AI generation |
 
-## Project Structure
+---
+
+## 📂 Project Structure
+
+<details>
+<summary>View Detailed Directory Map</summary>
 
 ```
 vibedesign-ai/
-├── prisma/
-│   └── schema.prisma          # Database schema
+├── prisma/                    # Database schema
 ├── public/                    # Static assets
 ├── src/
 │   ├── app/                   # Next.js App Router pages
 │   │   ├── api/              # API routes
-│   │   │   ├── chat/         # Chat API
-│   │   │   ├── generate/     # Screen generation API
-│   │   │   ├── projects/     # Projects CRUD
-│   │   │   └── screens/      # Screens CRUD
 │   │   ├── dashboard/        # User dashboard
 │   │   ├── editor/           # Project editor
 │   │   ├── projects/         # Projects list
 │   │   ├── templates/        # App templates
-│   │   ├── pricing/          # Pricing page
-│   │   ├── layout.tsx        # Root layout
-│   │   ├── page.tsx          # Landing page
-│   │   └── globals.css       # Global styles
+│   │   └── pricing/          # Pricing page
 │   ├── components/
 │   │   ├── editor/           # Editor components
-│   │   │   ├── canvas.tsx
-│   │   │   ├── chat-sidebar.tsx
-│   │   │   ├── mobile-frame.tsx
-│   │   │   └── toolbar.tsx
 │   │   ├── home/             # Home page components
 │   │   ├── layout/           # Layout components
-│   │   │   └── header.tsx
 │   │   └── ui/               # Reusable UI components
-│   │       ├── button.tsx
-│   │       ├── input.tsx
-│   │       ├── loading.tsx
-│   │       └── sonner.tsx
 │   ├── lib/
 │   │   ├── ai.ts             # AI provider utilities
 │   │   ├── env.ts            # Environment validation
 │   │   ├── prisma.ts         # Prisma client
 │   │   └── utils.ts          # Utility functions
-│   └── generated/prisma/     # Generated Prisma client
-├── .env.example              # Environment template
-├── .eslint.config.mjs        # ESLint configuration
-├── next.config.ts            # Next.js configuration
-├── package.json
-├── tailwind.config.ts        # Tailwind configuration
 └── tsconfig.json             # TypeScript configuration
 ```
+</details>
 
-## API Documentation
+
+---
+
+## 📚 API Documentation
 
 ### Projects
-
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/projects` | List all user projects |
@@ -168,11 +182,8 @@ vibedesign-ai/
 | GET | `/api/projects/:id` | Get single project |
 | PATCH | `/api/projects/:id` | Update project |
 | DELETE | `/api/projects/:id` | Delete project |
-| POST | `/api/projects/:id/screens` | Add screen to project |
-| POST | `/api/projects/save` | Save project state |
 
 ### Screens
-
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/screens/:id` | Get single screen |
@@ -180,19 +191,19 @@ vibedesign-ai/
 | DELETE | `/api/screens/:id` | Delete screen |
 
 ### AI Generation
-
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/generate` | Generate new screen |
 | POST | `/api/chat` | AI chat assistant |
 
-## Deployment
+---
+
+## 🌐 Deployment
 
 ### Vercel (Recommended)
-
 1. Push your code to GitHub
 2. Import project in Vercel
-3. Add environment variables in Vercel dashboard
+3. Add environment variables
 4. Deploy
 
 ```bash
@@ -201,7 +212,6 @@ vercel deploy --prod
 ```
 
 ### Docker
-
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -213,60 +223,32 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
-### Railway
+---
 
-1. Connect GitHub repository
-2. Add PostgreSQL service
-3. Add environment variables
-4. Deploy
-
-### Netlify
-
-Netlify doesn't support WebSocket connections required for some features. Use Vercel instead.
-
-## Development
-
-```bash
-# Run development server
-npm run dev
-
-# Type checking
-npm run type-check
-
-# Linting
-npm run lint
-
-# Build for production
-npm run build
-
-# Run production server
-npm start
-```
-
-## Architecture
+## 🏗️ Architecture
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture documentation.
 
-## Contributing
+---
+
+## 🤝 Contributing & Support
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch
+3. Submit a Pull Request
 
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Support
-
-- Create an issue for bugs
-- Discussions for questions
-- Wiki for documentation
+- **Issues:** Create an issue for bugs
+- **Discussions:** Discussions for questions
+- **Wiki:** Wiki for documentation
 
 ---
 
-<div align="center">
-Built with ❤️ using Next.js, AI, and Modern Web Technologies
-</div>
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+---
+
+<p align="center">
+  <i>Built with ❤️ using Next.js, AI, and Modern Web Technologies</i>
+</p>

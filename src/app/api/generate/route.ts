@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateText } from "ai";
 import { minimax } from "vercel-minimax-ai-provider";
 import { z } from "zod";
+import { rateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 
 const minimaxModel = minimax("abab6.5s-chat");
 
@@ -21,14 +22,18 @@ function extractJSON(text: string): ScreenData | null {
   // Pattern 1: Direct JSON object
   try {
     return JSON.parse(text);
-  } catch { /* continue */ }
+  } catch {
+    /* continue */
+  }
 
   // Pattern 2: JSON in code blocks (```json or ```)
   const codeBlockMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
   if (codeBlockMatch) {
     try {
       return JSON.parse(codeBlockMatch[1]);
-    } catch { /* continue */ }
+    } catch {
+      /* continue */
+    }
   }
 
   // Pattern 3: JSON object anywhere in text (find first { and last })
@@ -36,12 +41,16 @@ function extractJSON(text: string): ScreenData | null {
   if (jsonMatch) {
     try {
       return JSON.parse(jsonMatch[0]);
-    } catch { /* continue */ }
+    } catch {
+      /* continue */
+    }
   }
 
   // Pattern 4: Look for specific fields in text
   const nameMatch = text.match(/"name"\s*:\s*"([^"]*)"/);
-  const htmlMatch = text.match(/"htmlContent"\s*:\s*"([\s\S]*?)"(?:,\s*"|\s*})/);
+  const htmlMatch = text.match(
+    /"htmlContent"\s*:\s*"([\s\S]*?)"(?:,\s*"|\s*})/,
+  );
   const descMatch = text.match(/"description"\s*:\s*"([^"]*)"/);
   const cssMatch = text.match(/"cssContent"\s*:\s*"([^"]*)"/);
 
@@ -60,7 +69,10 @@ function extractJSON(text: string): ScreenData | null {
 /**
  * Generate screen data using Minimax AI
  */
-async function generateScreenData(prompt: string, systemPrompt: string): Promise<ScreenData> {
+async function generateScreenData(
+  prompt: string,
+  systemPrompt: string,
+): Promise<ScreenData> {
   const fullPrompt = `${systemPrompt}
 
 ${prompt}
@@ -115,7 +127,8 @@ Do NOT include markdown code blocks, explanations, or any other text. Just retur
  * Generate a simple fallback HTML when AI fails
  */
 function generateFallbackHTML(userPrompt: string): string {
-  const safePrompt = userPrompt.length > 100 ? userPrompt.slice(0, 100) + "..." : userPrompt;
+  const safePrompt =
+    userPrompt.length > 100 ? userPrompt.slice(0, 100) + "..." : userPrompt;
 
   return `<div class="min-h-screen bg-gray-50 p-6">
   <div class="max-w-md mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -142,6 +155,12 @@ const generateBodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  // Apply rate limiting for AI generation endpoint (strict: 10 req/min)
+  const rateLimitResponse = rateLimit(RATE_LIMITS.strict)(req);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -153,8 +172,11 @@ export async function POST(req: NextRequest) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Invalid request body", details: validation.error.flatten().fieldErrors },
-        { status: 400 }
+        {
+          error: "Invalid request body",
+          details: validation.error.flatten().fieldErrors,
+        },
+        { status: 400 },
       );
     }
 
@@ -186,7 +208,7 @@ export async function POST(req: NextRequest) {
 
     const screenData = await generateScreenData(
       `Project: ${project.name}\nRequest: ${prompt}`,
-      systemPrompt
+      systemPrompt,
     );
 
     // Handle update or create
@@ -223,12 +245,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ screen, fallback: screenData.name === "Generated Screen" ? true : undefined });
+    return NextResponse.json({
+      screen,
+      fallback: screenData.name === "Generated Screen" ? true : undefined,
+    });
   } catch (error) {
     console.error("[Generate] Error:", error);
     return NextResponse.json(
       { error: "Failed to generate screen" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
