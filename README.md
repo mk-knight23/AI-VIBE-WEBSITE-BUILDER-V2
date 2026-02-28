@@ -252,3 +252,22 @@ MIT License - see LICENSE file for details.
 <p align="center">
   <i>Built with ❤️ using Next.js, AI, and Modern Web Technologies</i>
 </p>
+
+
+## 🎯 Problem Solved
+
+This repository provides a streamlined approach to modern development needs, enabling developers to build robust applications with minimal complexity and maximum efficiency.
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/mk-knight23/AI-VIBE-WEBSITE-BUILDER-V2
+cd AI-VIBE-WEBSITE-BUILDER-V2
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
